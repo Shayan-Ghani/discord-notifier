@@ -1,4 +1,3 @@
-import os
 from discord import Intents, Client
 from discord_webhook import DiscordWebhook
 
