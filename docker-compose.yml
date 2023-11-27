@@ -1,0 +1,11 @@
+version: !!str 3.7
+
+services:
+  discord:
+    build: .
+    container_name: discord-notifier
+    environment:
+      TOKEN: "your bot token"
+      HOOK: "your server's webhook"
+      ADMIN_ID: "your server admin id" 
+      USER_ID: "extra user id to notify"
