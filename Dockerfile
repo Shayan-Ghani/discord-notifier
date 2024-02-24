@@ -2,7 +2,7 @@ FROM python:3.10.4-slim-buster
 
 LABEL maintainer=shayanghani1384@gmail.com
 
-ENV TOKEN HOOK ADMIN_ID USER_ID
+ENV TOKEN="None" HOOK="None" ADMIN_ID=0 USER_ID=0 SENDER_HOOK_NAME="None" CHANNEL_ID=0
 
 WORKDIR /opt/app
 
