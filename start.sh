@@ -1,1 +1,0 @@
-gunicorn -b 0.0.0.0:8000 -w 1 --access-logfile - --error-logfile - "discord-notifier:notify()"
