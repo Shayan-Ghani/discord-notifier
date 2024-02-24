@@ -1,40 +1,38 @@
-from discord import Intents, Client
-from discord_webhook import DiscordWebhook
-
+import discord
+from discord.ext import commands
+from aiohttp import ClientSession
 from os import environ
 
+BOT_TOKEN = environ.get("TOKEN" , None)
+CHANNEL_ID = int(environ.get("CHANNEL_ID" , '0'))
+NOTIFICATION_WEBHOOK_URL = environ.get("HOOK" , None)
+USER_ID = int(environ.get("USER_ID", '0'))
+
+SENDER_HOOK_NAME = environ.get("SENDER_HOOK_NAME", None)
+
 def notify():
+    intent = discord.Intents.default()
+    intent.messages = True
 
-    TOKEN = environ.get("TOKEN" , None)
-    HOOK = environ.get("HOOK" , None)
-    ADMIN_ID = environ.get("ADMIN_ID", None)
-    USER_ID = environ.get("USER_ID", None)
-    SENDER_ID = environ.get("SENDER_ID", None)
+    client = commands.Bot(command_prefix='!', intents=intent)
 
-    intents = Intents.default()
-    intents.messages = True
-   
-    client = Client(intents=intents)
-
-    webhook_url = HOOK
-
-    admin_id = ADMIN_ID
-    user_id = USER_ID
-    sender_id = SENDER_ID
-    
     @client.event
     async def on_ready():
-        print(f'We have logged in as {client.user}')
+        print(f'Logged in as {client.user.name}')
 
+    # use aiohttp and discord Webhook async to notify the user 
     @client.event
     async def on_message(message):
-        if message.author == client.user:
-            return
-        elif message.author.name != sender_id:
-            return
-        
-    # create your message
-        webhook = DiscordWebhook(url=webhook_url, content=f"<@{admin_id}> <@{user_id}> A New Alert has been triggered")
-        response = webhook.execute()
+        # Check if the message is from the target channel and the target bot
+        if message.channel.id == CHANNEL_ID and message.author.name == SENDER_HOOK_NAME:
 
-    client.run(TOKEN)
+            notification_message = f"<@{USER_ID}> A New Alert has been triggered"
+
+            async with ClientSession() as session:
+                webhook = discord.Webhook.from_url(NOTIFICATION_WEBHOOK_URL, session=session)
+                await webhook.send(notification_message, username='Captian Hook')
+
+    client.run(BOT_TOKEN)
+
+if __name__ == "__main__":
+    notify()
