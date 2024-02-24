@@ -13,6 +13,7 @@ Utilize it with alertmanager Discord Combination to mention the admin when an al
    ```bash 
    docker pull devopsteen/discord_notifier
    docker run --name discord-notifier -d -e TOKEN="your bot token" -e HOOK="your server's webhook" -e ADMIN_ID="your server admin id" -e USER_ID="extra user id to notify" devopsteen/discord_notifier:latest 
+   SENDER_ID="the webhook you dedicated to prometheus alertmanager"
    ```
 4. Alternatively , simply edit and deploy the compose file : 
    ```bash 

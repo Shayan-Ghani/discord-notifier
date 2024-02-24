@@ -9,3 +9,4 @@ services:
       HOOK: "your server's webhook"
       ADMIN_ID: "your server admin id" 
       USER_ID: "extra user id to notify"
+      SENDER_ID: "Spidey Bot"
