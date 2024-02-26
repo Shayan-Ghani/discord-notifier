@@ -10,3 +10,6 @@ services:
       ADMIN_ID: "your server admin id" 
       USER_ID: "extra user id to notify"
       SENDER_ID: "Spidey Bot"
+
+# TODO : sync env vars with the actual one used in the programm
+# TODO : add custom message env var with a default value.
