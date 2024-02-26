@@ -7,6 +7,6 @@ services:
     environment:
       TOKEN: "your bot token"
       HOOK: "your server's webhook"
-      ADMIN_ID: "your server admin id" 
       USER_ID: "extra user id to notify"
-      SENDER_ID: "Spidey Bot"
+      SENDER_HOOK_NAME: "the webhook name that is used by alertmanager"
+      MESSAGE: "<@USER_ID> your custom message."
