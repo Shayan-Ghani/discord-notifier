@@ -75,7 +75,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
       - name: Approve Changelog PR
-        if: steps.changelog.outputs.skipped == 'true'
+        if: steps.changelog.outputs.skipped == 'false'
         run: |
           gh pr review --approve ${{ env.PR_BRANCH }}
         env:
