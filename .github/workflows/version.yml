@@ -60,7 +60,7 @@ jobs:
           
 
       - name: Create Changelog PR
-        if: steps.changelog.outputs.skipped == 'false'
+        if: steps.changelog.outputs.skipped == 'true'
         run: |
           git add .
           git commit -m "chore(release): v${{ steps.changelog.outputs.version }} [skip-ci]"
@@ -70,14 +70,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 
       # - name: Approve Changelog PR
-      #   if: steps.changelog.outputs.skipped == 'false'
+      #   if: steps.changelog.outputs.skipped == 'true'
       #   run: |
       #     gh pr review --approve ${{ env.PR_BRANCH }}
       #   env:
       #     GH_TOKEN: ${{ github.token }}
 
       - name: Merge Changelog PR
-        if: steps.changelog.outputs.skipped == 'false'
+        if: steps.changelog.outputs.skipped == 'true'
         run: |
           gh pr merge --squash --auto --delete-branch ${{ env.PR_BRANCH }}
         env:
@@ -86,7 +86,7 @@ jobs:
   release:
     name: Release
     needs: changelog
-    if: github.event_name != 'pull_request' && needs.changelog.outputs.skipped == 'false'
+    if: github.event_name != 'pull_request' && needs.changelog.outputs.skipped == 'true'
     runs-on: ubuntu-latest
 
     steps:
