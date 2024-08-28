@@ -65,6 +65,7 @@ jobs:
         if: steps.changelog.outputs.skipped == 'true'
         run: |
           git add .
+          git commit -m "chore(release): ${{ steps.changelog.outputs.tag }} [skip-ci]"
           gh pr create --base master --head ${{ env.PR_BRANCH }} --title 'chore(release): ${{ steps.changelog.outputs.tag }} [skip-ci]' --body '${{ steps.changelog.outputs.clean_changelog }}'
         env:
           GH_TOKEN: ${{ github.token }}
