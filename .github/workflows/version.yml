@@ -47,6 +47,7 @@ jobs:
       - name: Create Branch
         run: |
           git checkout -b ${{ env.PR_BRANCH }}
+          git push --set-upstream origin ${{ env.PR_BRANCH }}
 
       - name: Create Changelog
         uses: TriPSs/conventional-changelog-action@dd734f74fce61a6e02f821ee1b5930bc79a23534 # v5
@@ -66,7 +67,7 @@ jobs:
           git branch
           git checkout ${{ env.PR_BRANCH }}
           git diff master
-          git push --set-upstream origin ${{ env.PR_BRANCH }}
+          git push 
           gh pr create --base master --head ${{ env.PR_BRANCH }} --title 'chore(release): ${{ steps.changelog.outputs.tag }} [skip-ci]' --body '${{ steps.changelog.outputs.clean_changelog }}'
         env:
           GH_TOKEN: ${{ github.token }}
