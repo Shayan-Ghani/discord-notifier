@@ -10,7 +10,6 @@ permissions:
   contents: write
   pull-requests: write
 
-
 jobs:
   
   build:
@@ -25,7 +24,6 @@ jobs:
           push: false
           tags: devopsteen/discord-notifier:latest
 
-
   changelog:
     name: Changelog
     needs:
@@ -35,9 +33,9 @@ jobs:
 
     outputs:
       skipped: ${{ steps.changelog.outputs.skipped }}
-      tag: ${{ steps.changelog.outputs.tag }}
       clean_changelog: ${{ steps.changelog.outputs.clean_changelog }}
       version: ${{ steps.changelog.outputs.version }}
+      tag: "v${{ steps.changelog.outputs.version }}"
 
     env:
       PR_BRANCH: release-ci-${{ github.sha }}
@@ -47,7 +45,6 @@ jobs:
       - name: Create Branch
         run: |
           git checkout -b ${{ env.PR_BRANCH }}
-          git push --set-upstream origin ${{ env.PR_BRANCH }}
 
       - name: Create Changelog
         uses: TriPSs/conventional-changelog-action@dd734f74fce61a6e02f821ee1b5930bc79a23534 # v5
@@ -57,17 +54,19 @@ jobs:
           git-user-name: "github-actions[bot]"
           git-user-email: "github-actions[bot]@users.noreply.github.com"
           git-branch: ${{ env.PR_BRANCH }}
+          skip-git-pull: true
+          output-file: false
           version-file: .github/package.yml
+          create-summary: true
           
 
       - name: Create Changelog PR
         if: steps.changelog.outputs.skipped == 'true'
         run: |
           git add .
-          git commit -m "chore(release): ${{ steps.changelog.outputs.version }} [skip-ci]"
-          git tag
-          git push 
-          gh pr create --base master --head ${{ env.PR_BRANCH }} --title 'chore(release): ${{ steps.changelog.outputs.version }} [skip-ci]' --body '${{ steps.changelog.outputs.clean_changelog }}'
+          git commit -m "chore(release): ${{ steps.changelog.outputs.tag }} [skip-ci]"
+          git push --set-upstream origin ${{ env.PR_BRANCH }}
+          gh pr create --base master --head ${{ env.PR_BRANCH }} --title 'chore(release): ${{ steps.changelog.outputs.tag }} [skip-ci]' --body '${{ steps.changelog.outputs.clean_changelog }}'
         env:
           GH_TOKEN: ${{ github.token }}
 
@@ -113,8 +112,8 @@ jobs:
         uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
         with:
           token: ${{ github.token }}
-          tag_name: ${{ needs.changelog.outputs.version }}
-          prerelease: true
+          tag_name: ${{ needs.changelog.outputs.tag }}
+          prerelease: false
           draft: false
           generate_release_notes: true
           name: ${{ needs.changelog.outputs.tag }}
