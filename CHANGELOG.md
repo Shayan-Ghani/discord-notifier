@@ -8,3 +8,8 @@
 ## fixed
 
 - ci dependency
+
+## [1.0.9]
+
+## fix
+- used mikepenz/release-changelog-builder-action@v5 action to create changelog
