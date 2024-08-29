@@ -18,7 +18,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - 
+        name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
       -
+        id: build
         name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -26,6 +30,7 @@ jobs:
           tags: devopsteen/discord-notifier:latest
           
   release:
+    needs: build
     name: Release
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
