@@ -5,3 +5,6 @@
 
 ## [1.0.8] - 2024-08-29
 - testing new release pattern
+## fixed
+
+- ci dependency
