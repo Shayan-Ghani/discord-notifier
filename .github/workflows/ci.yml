@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "v*.*.*"
+  pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+      -
+        name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: false
+          tags: devopsteen/discord-notifier:latest
+          
+  release:
+    name: Release
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
+
+      - name: login to docker
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          tags: devopsteen/discord-notifier:${{ github.ref_name }}
+
+
+      - name: Create Release
+        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
+        with:
+          body_path: ./CHANGELOG.md
+          token: ${{ github.token }}
+          prerelease: false
+          draft: false
+          generate_release_notes: true
