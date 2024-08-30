@@ -66,4 +66,4 @@ jobs:
         with:
           body: ${{ steps.bump.outputs.outputs.changelog }}
           # body: ${{steps.github_release.outputs.changelog}}
-          tag: ${{ steps.bump.outputs.new_tag }} 
+          tag_name: ${{ steps.bump.outputs.new_tag }} 
