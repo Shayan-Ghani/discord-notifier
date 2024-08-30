@@ -30,16 +30,26 @@ jobs:
           push: false
           tags: devopsteen/discord-notifier:latest
 
+  bump:
+    if: github.ref_name == 'master'
+    runs-on: ubuntu-latest        
+    steps:
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.2
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
   release:
     if: startsWith(github.ref, 'refs/tags/') && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    needs: bump
     steps:
       - name: Build Changelog
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v5
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}          
 
       - name: login to docker
         uses: docker/login-action@v3
@@ -57,4 +67,6 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
         with:
-          body: ${{steps.github_release.outputs.changelog}}
+          body: ${{ needs.bump.outputs.outputs.changelog }}
+          # body: ${{steps.github_release.outputs.changelog}}
+          tag: ${{ needs.bump.outputs.new_tag }} 
